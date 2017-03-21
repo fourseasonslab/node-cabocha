@@ -1,0 +1,28 @@
+{
+  "name": "node-cabocha",
+  "version": "0.0.1",
+  "description": "npm package for Cabocha",
+  "main": "cabocha.js",
+  "dependencies": {
+    "@types/node": "^7.0.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fourseasonslab/node-cabocha.git"
+  },
+  "keywords": [
+    "node",
+    "cabocha",
+    "mecab"
+  ],
+  "author": "fourseasonslab",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fourseasonslab/node-cabocha/issues"
+  },
+  "homepage": "https://github.com/fourseasonslab/node-cabocha#readme"
+}
