@@ -18,4 +18,3 @@ cabocha.parse("すもももももももものうち", function(result){
 
 ## LICENCE
 - MIT (for .ts and .js)
-- Apache License 2.0 (for native word2vec sources)
