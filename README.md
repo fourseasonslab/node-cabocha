@@ -2,7 +2,7 @@
 npm package for [Cabocha](https://taku910.github.io/cabocha/)
 
 ## Installation
-install [Cabocha](https://taku910.github.io/cabocha/)
+you should install [Cabocha](https://taku910.github.io/cabocha/) before use node-cabocha
 ```bash
 npm install node-cabocha
 ```
