@@ -19,7 +19,7 @@ var Cabocha = (function () {
                 };
                 var res = parseCabochaResult("" + data);
                 //console.log(res);
-                var depres = []; //dependency relationsのresultって書きたかった
+                var depres = []; //dependency relations
                 var item = [0, "", []]; // [relID, "chunk", [[mecab results]]]o
                 var mecabList = [];
                 var mecabs = [];
@@ -59,8 +59,17 @@ var Cabocha = (function () {
             console.log('child process exited.');
         });
         this.p.on('error', function (err) {
-            console.error(err);
-            process.exit(1);
+            console.error("Error detected in node-cabocha!");
+            if (err && err.code === "ENOENT") {
+                console.error(err.path + " not found!");
+                if (err.path === "cabocha") {
+                    console.error("Please install cabocha from:");
+                    console.error("https://taku910.github.io/cabocha/");
+                }
+            }
+            else {
+                console.error(err);
+            }
         });
     }
     Cabocha.prototype.parse = function (s, f) {

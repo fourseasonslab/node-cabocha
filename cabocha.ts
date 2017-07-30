@@ -62,8 +62,16 @@ class Cabocha
 			console.log('child process exited.');
 		});
 		this.p.on('error', function (err) {
-			console.error(err);
-			process.exit(1);
+			console.error("Error detected in node-cabocha!");
+			if(err && err.code === "ENOENT"){
+				console.error(err.path + " not found!");
+				if(err.path === "cabocha"){
+					console.error("Please install cabocha from:");
+					console.error("https://taku910.github.io/cabocha/");
+				}
+			} else{
+				console.error(err);
+			}
 		});
 	}
 
