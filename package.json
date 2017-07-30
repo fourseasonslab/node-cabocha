@@ -1,6 +1,6 @@
 {
   "name": "node-cabocha",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "npm package for Cabocha",
   "main": "cabocha.js",
   "dependencies": {
