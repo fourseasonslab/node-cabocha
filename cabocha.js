@@ -1,5 +1,8 @@
+var execSync = require('child_process').execSync;
 var Cabocha = (function () {
     function Cabocha(dictPath) {
+        if (!this.isCabochaInstalled())
+            return;
         var childprocess = require("child_process");
         this.p = childprocess.spawn('cabocha', ["-f1"].concat(dictPath == undefined ? [] : ["-d", dictPath]), {});
         var that = this;
@@ -72,7 +75,21 @@ var Cabocha = (function () {
             }
         });
     }
+    Cabocha.prototype.isCabochaInstalled = function () {
+        try {
+            var result = execSync('which cabocha');
+            if (result.length > 0) {
+                return true;
+            }
+        }
+        catch (e) {
+            console.error("node-cabocha: Warning: cabocha not found.");
+        }
+        return false;
+    };
     Cabocha.prototype.parse = function (s, f) {
+        if (!this.isCabochaInstalled())
+            return;
         this.f = f;
         this.p.stdin.write(s + "\n");
     };

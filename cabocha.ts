@@ -1,8 +1,11 @@
+const execSync = require('child_process').execSync;
+
 class Cabocha
 {
 	p: any;  
 	f: Function;
 	constructor(dictPath?: string){
+		if(!this.isCabochaInstalled()) return;
 		var childprocess = require("child_process");
 		this.p = childprocess.spawn('cabocha', ["-f1"].concat(dictPath == undefined ? [] : ["-d", dictPath]), {});
 		var that = this;
@@ -74,8 +77,19 @@ class Cabocha
 			}
 		});
 	}
-
+	isCabochaInstalled(){
+		try{
+			const result =  execSync('which cabocha');
+			if(result.length > 0){
+				return true;
+			}
+		} catch(e){
+			console.error("node-cabocha: Warning: cabocha not found.");
+		}
+		return false;
+	}
 	parse(s: string, f: Function){
+		if(!this.isCabochaInstalled()) return;
 		this.f = f;
 		this.p.stdin.write(s + "\n");
 	}
