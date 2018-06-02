@@ -1,5 +1,10 @@
 var Cabocha = require("../");
-cabocha = new Cabocha();
-cabocha.parse("すもももももももものうち", function(result){
+const cabocha = new Cabocha();
+//cabocha.enableDebugMode();
+cabocha.parse("すもももももももものうち", (result) => {
 	console.log(result);
+	cabocha.parse("おいしいかぼちゃの季節になりましたね", (result) => {
+		console.log(result);
+		process.exit();
+	});
 });
