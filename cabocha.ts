@@ -1,4 +1,4 @@
-const child_process = require("child_process");
+import * as child_process from "child_process";
 
 class Cabocha
 {
@@ -29,9 +29,20 @@ class Cabocha
 	parse(s: string, callback: Function){
 		if(!this.isCabochaInstalled()) return;
 		this.debugLog("parse requested.");
-		var p = child_process.spawn('cabocha', ["-f1"].concat(this.dictPath == undefined ? [] : ["-d", this.dictPath]), {});
-		p.stdout.on('data', (data) => {
-			this.debugLog("data" + data);
+		var p = child_process.execFile('cabocha', ["-f1"].concat(this.dictPath == undefined ? [] : ["-d", this.dictPath]), (err: any, stdout, stderr) => {
+			if(err) {
+				console.error("Error detected in node-cabocha!");
+				if(err && err.code === "ENOENT"){
+					console.error(err.path + " not found!");
+					if(err.path === "cabocha"){
+						console.error("Please install cabocha from:");
+						console.error("https://taku910.github.io/cabocha/");
+					}
+				} else{
+					console.error(err);
+				}
+			}
+			this.debugLog("data" + stdout);
 			var parseCabochaResult = function (inp) {
 				inp = inp.replace(/ /g, ",");
 				inp = inp.replace(/\r/g, "");
@@ -42,7 +53,7 @@ class Cabocha
 				});
 				return res;
 			};
-			var res = parseCabochaResult("" + data);
+			var res = parseCabochaResult(stdout);
 			var depres = [];    //dependency relations
 			var item = [0, "", []];	// [relID, "chunk", [[mecab results]]]o
 			var mecabList = [];
@@ -75,25 +86,13 @@ class Cabocha
 				words: mecabs,
 				scores: scores,
 			};
-			p.kill();
 			callback(ret);
 		});
 		p.on('exit', (code) => {
 			this.debugLog(`child process exited (code ${code}).`);
 		});
-		p.on('error', (err) => {
-			console.error("Error detected in node-cabocha!");
-			if(err && err.code === "ENOENT"){
-				console.error(err.path + " not found!");
-				if(err.path === "cabocha"){
-					console.error("Please install cabocha from:");
-					console.error("https://taku910.github.io/cabocha/");
-				}
-			} else{
-				console.error(err);
-			}
-		});
 		p.stdin.write(s + "\n");
+		p.stdin.end();
 	}
 }
 

@@ -1,3 +1,5 @@
+"use strict";
+exports.__esModule = true;
 var child_process = require("child_process");
 var Cabocha = /** @class */ (function () {
     function Cabocha(dictPath) {
@@ -31,9 +33,21 @@ var Cabocha = /** @class */ (function () {
         if (!this.isCabochaInstalled())
             return;
         this.debugLog("parse requested.");
-        var p = child_process.spawn('cabocha', ["-f1"].concat(this.dictPath == undefined ? [] : ["-d", this.dictPath]), {});
-        p.stdout.on('data', function (data) {
-            _this.debugLog("data" + data);
+        var p = child_process.execFile('cabocha', ["-f1"].concat(this.dictPath == undefined ? [] : ["-d", this.dictPath]), function (err, stdout, stderr) {
+            if (err) {
+                console.error("Error detected in node-cabocha!");
+                if (err && err.code === "ENOENT") {
+                    console.error(err.path + " not found!");
+                    if (err.path === "cabocha") {
+                        console.error("Please install cabocha from:");
+                        console.error("https://taku910.github.io/cabocha/");
+                    }
+                }
+                else {
+                    console.error(err);
+                }
+            }
+            _this.debugLog("data" + stdout);
             var parseCabochaResult = function (inp) {
                 inp = inp.replace(/ /g, ",");
                 inp = inp.replace(/\r/g, "");
@@ -44,7 +58,7 @@ var Cabocha = /** @class */ (function () {
                 });
                 return res;
             };
-            var res = parseCabochaResult("" + data);
+            var res = parseCabochaResult(stdout);
             var depres = []; //dependency relations
             var item = [0, "", []]; // [relID, "chunk", [[mecab results]]]o
             var mecabList = [];
@@ -78,26 +92,13 @@ var Cabocha = /** @class */ (function () {
                 words: mecabs,
                 scores: scores
             };
-            p.kill();
             callback(ret);
         });
         p.on('exit', function (code) {
             _this.debugLog("child process exited (code " + code + ").");
         });
-        p.on('error', function (err) {
-            console.error("Error detected in node-cabocha!");
-            if (err && err.code === "ENOENT") {
-                console.error(err.path + " not found!");
-                if (err.path === "cabocha") {
-                    console.error("Please install cabocha from:");
-                    console.error("https://taku910.github.io/cabocha/");
-                }
-            }
-            else {
-                console.error(err);
-            }
-        });
         p.stdin.write(s + "\n");
+        p.stdin.end();
     };
     return Cabocha;
 }());
